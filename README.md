@@ -1,0 +1,1 @@
+# Symulacja_Wahad-a_Kapicy
