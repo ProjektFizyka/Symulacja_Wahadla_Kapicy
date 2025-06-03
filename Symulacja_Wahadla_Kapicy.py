@@ -8,7 +8,7 @@ L = 1.0
 A = 0.1
 g = 9.81
 dt = 0.02
-t_max = 10
+t_max = 60 #czas trwania symulacji
 t_vals = np.arange(0, t_max, dt)
 
 # Warunki początkowe
@@ -16,20 +16,20 @@ theta0 = np.pi - 0.1
 theta_dot0 = 0.0
 
 # Obliczenie wartości granicznej omega
-omega_critical = np.sqrt(2 * g / A)  # ok. 14.0
+omega_critical = (np.sqrt(2 * g * L))/ A # Obliczenie wartości krytycznej
 omega_init = omega_critical  # startujemy dokładnie od wartości krytycznej
 
 # Funkcja do symulacji
 def simulate_kapitza(omega):
-    theta_vals = [theta0]
-    theta_dot_vals = [theta_dot0]
+    theta_vals = [theta0] # Początkowa wartość kąta (blisko pozycji odwróconej)
+    theta_dot_vals = [theta_dot0] # Początkowa prędkość kątowa 
     for t in t_vals[:-1]:
         theta = theta_vals[-1]
         theta_dot = theta_dot_vals[-1]
-        y_ddot = -omega ** 2 * A * np.sin(omega * t)
-        theta_ddot = -(g + y_ddot) / L * np.sin(theta)
-        theta_dot_new = theta_dot + theta_ddot * dt
-        theta_new = theta + theta_dot_new * dt
+        y_ddot = -omega ** 2 * A * np.cos(omega * t) # Obliczenie przyspieszenia punktu zawieszenia (y_ddot = -Aω²cos(ωt))
+        theta_ddot = -(g + y_ddot) / L * np.sin(theta) # Obliczenie przyspieszenia kątowego
+        theta_dot_new = theta_dot + theta_ddot * dt  # Metoda Eulera dla prędkości
+        theta_new = theta + theta_dot_new * dt # Metoda Eulera dla położenia
         theta_dot_vals.append(theta_dot_new)
         theta_vals.append(theta_new)
     return theta_vals
@@ -44,7 +44,7 @@ plt.subplots_adjust(bottom=0.25)
 ax.set_xlim(-2.0, 2.0)
 ax.set_ylim(-2, 2)
 ax.set_aspect('equal')
-ax.set_title("Kapitza Pendulum")
+ax.set_title("Wahadło Kapicy")
 
 line, = ax.plot([], [], 'r-', lw=3)
 bob, = ax.plot([], [], 'o', markersize=15, color='blue')
